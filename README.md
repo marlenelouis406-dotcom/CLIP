@@ -5,6 +5,72 @@
 CLIP (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs. It can be instructed in natural language to predict the most relevant text snippet, given an image, without directly optimizing for the task, similarly to the zero-shot capabilities of GPT-2 and 3. We found CLIP matches the performance of the original ResNet50 on ImageNet “zero-shot” without using any of the original 1.28M labeled examples, overcoming several major challenges in computer vision.
 
 
+## Repository Structure for Product Apps
+
+The root package in this repository remains the CLIP library. To avoid mixing product application code with the library package, a dedicated app workspace has been added at:
+
+- `apps/hospital_management/`
+
+This workspace separates concerns into:
+
+- `apps/hospital_management/backend/` for API services, auth, and DB models.
+- `apps/hospital_management/frontend/` for UI routes and form workflows.
+- `apps/hospital_management/infra/` for environment configuration and deployment assets.
+
+The existing CLIP package under `clip/` is intentionally left untouched unless an explicit AI feature requires integration with hospital modules.
+
+### Project Purpose
+
+Build a hospital management product in an isolated app boundary while preserving this repository's CLIP package as a reusable ML library.
+
+### High-Level Architecture
+
+```mermaid
+flowchart TD
+    U[Users / Staff] --> FE[frontend\nRoutes + Forms]
+    FE --> BE[backend\nAPI + Auth + Models]
+    BE --> DB[(Operational Database)]
+    BE --> AI[Optional AI Integration Layer]
+    AI --> CLIP[clip/ Python package]
+    INF[infra\nEnv + Deploy Config] -. config/deploy .-> FE
+    INF -. config/deploy .-> BE
+```
+
+### Startup Commands
+
+From the repository root:
+
+```bash
+# 1) Install CLIP package dependencies (existing library workflow)
+pip install -r requirements.txt
+pip install -e .
+
+# 2) Move into the hospital app workspace
+cd apps/hospital_management
+
+# 3) Initialize backend/frontend/infra modules as needed
+# (scaffold-specific commands should live in each subdirectory)
+```
+
+### Environment Variables
+
+Hospital app modules should define environment variables under `apps/hospital_management/infra/` (for example an `.env.example`), including:
+
+- `HOSPITAL_ENV` (e.g., `local`, `staging`, `prod`)
+- `HOSPITAL_API_PORT`
+- `HOSPITAL_DB_URL`
+- `HOSPITAL_AUTH_SECRET`
+- `HOSPITAL_CLIP_ENABLED` (feature flag for explicit CLIP integration)
+
+### Local Development Workflow
+
+1. Keep CLIP-library changes scoped to `clip/`, tests, and packaging files.
+2. Keep hospital product development scoped to `apps/hospital_management/`.
+3. Develop backend and frontend independently, with shared contracts managed in the app workspace.
+4. Add infra changes in `apps/hospital_management/infra/` and version deployment/environment changes with code.
+5. Integrate CLIP only through explicit hospital AI modules (do not couple core app routes directly to library internals).
+
+
 
 ## Approach
 
