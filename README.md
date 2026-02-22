@@ -197,3 +197,24 @@ Note that the `C` value should be determined via a hyperparameter sweep using a 
 
 * [OpenCLIP](https://github.com/mlfoundations/open_clip): includes larger and independently trained CLIP models up to ViT-G/14
 * [Hugging Face implementation of CLIP](https://huggingface.co/docs/transformers/model_doc/clip): for easier integration with the HF ecosystem
+
+## Idea to Markdown Draft App (FastHTML + OpenAI)
+
+This repository now includes a small FastHTML app that converts rough ideas into structured markdown drafts using the OpenAI API.
+
+### Files
+- `idea_draft_app.py` – the web app
+- `requirements_app.txt` – lightweight app-specific dependencies
+
+### Run it
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements_app.txt
+export OPENAI_API_KEY="your-key"
+# optional: export OPENAI_MODEL="gpt-4o-mini"
+python idea_draft_app.py
+```
+
+Then open `http://127.0.0.1:5001` in your browser.
